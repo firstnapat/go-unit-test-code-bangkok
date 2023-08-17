@@ -3,6 +3,7 @@ package handlers_test
 import (
 	"fmt"
 	"gotest/handlers"
+	"gotest/repositories"
 	"gotest/services"
 	"io"
 	"net/http/httptest"
@@ -13,15 +14,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPromotionCalculateDiscount(t *testing.T) {
+func TestPromotionCalculationDiscountIntegrationService(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 
 		amount := 100
 		expected := 80
 
-		promoService := services.NewPromotionServiceMock()
-		promoService.On("CalculateDiscount", amount).Return(expected, nil)
-
+		promoRepo := repositories.NewPromotionRepositoryMock()
+		promoRepo.On("GetPromotion").Return(repositories.Promotion{
+			ID:              1,
+			PurchaseMin:     100,
+			DiscountPercent: 20,
+		}, nil)
+		promoService := services.NewPromotionService(promoRepo)
 		promoHandler := handlers.NewPromotionHandlerr(promoService)
 
 		//http://localhost:6060/calculate?amount=100
@@ -38,4 +43,5 @@ func TestPromotionCalculateDiscount(t *testing.T) {
 			assert.Equal(t, strconv.Itoa(expected), string((body)))
 		}
 	})
+
 }
