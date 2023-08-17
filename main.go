@@ -9,10 +9,10 @@ import (
 
 func main() {
 	c := CustomerRepositoryMock{}
-	c.On("Get Customer", 1).Return("Bond", 18, nil)
-	c.On("Get Customer", 2).Return("", 0, errors.New("not found"))
+	c.On("GetCustomer", 1).Return("Bond", 18, nil)
+	c.On("GetCustomer", 2).Return("", 0, errors.New("not found"))
 
-	name, age, err := c.GetCustomer(1)
+	name, age, err := c.GetCustomer(2)
 	if err != nil {
 		fmt.Println(err)
 	}
